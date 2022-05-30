@@ -25,10 +25,6 @@ var blogSchema = new Schema({
           type : String,
           required : true
     },
-    date:{
-        type : String,
-        required : false
-    },
     title:{
         type : String,
         required : true
