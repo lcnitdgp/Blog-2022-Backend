@@ -87,7 +87,7 @@ blogRouter.route('/:blogId/comments')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post(authenticate.verifyUser, (req, res, next) => {
+.post( (req, res, next) => {
     Blogs.findById(req.params.blogId)
     .then((blog) => {
         if (blog != null) {
@@ -162,7 +162,7 @@ blogRouter.route('/:blogId/comments/:commentId')
     .catch((err) => next(err));
 })
 
-.put(authenticate.verifyUser, (req, res, next) => {
+.put( (req, res, next) => {
    
     Blogs.findById(req.params.blogId)
     .then((blog) => {
@@ -207,7 +207,8 @@ blogRouter.route('/:blogId/comments/:commentId')
 )
 
 
-.delete(authenticate.verifyUser, (req, res, next) => {
+.delete(
+     (req, res, next) => {
     
     Blogs.findById(req.params.blogId)
     .then((blog) => {

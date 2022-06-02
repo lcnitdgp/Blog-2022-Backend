@@ -6,7 +6,7 @@ var passport = require('passport');
 var authenticate = require('../authenticate');
 router.use(express.json());
 
-/* GET users listing. */
+
 router.route('/')
      .get(authenticate.verifyUser,  (req, res, next) => {
        User.find({})
@@ -19,9 +19,6 @@ router.route('/')
 })
 
   
-
-
-
 
 router.post('/signup', (req, res, next) => {
   User.register(new User({username: req.body.username}), 
@@ -52,6 +49,8 @@ router.post('/signup', (req, res, next) => {
     }
   });
 });
+
+
 router.post('/login', passport.authenticate('local'), (req, res) => {
 
   var token = authenticate.getToken({_id: req.user._id});

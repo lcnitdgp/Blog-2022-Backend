@@ -25,7 +25,7 @@ server.listen(port, hostname, ()=>{
     console.log(`server running at https://${hostname}/${port}/`)
 })
 
-connect.then((db) =>{
+connect.then((url) =>{
     console.log('connected to server');
 })
 
