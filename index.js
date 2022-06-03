@@ -1,4 +1,5 @@
 var createError = require('http-errors');
+require('dotenv').config()
 var http = require('http')
 var express = require('express');
 var path = require('path');
@@ -10,49 +11,68 @@ const mongoose = require('mongoose');
 const hostname = 'localhost';
 const port = process.env.PORT || 3000;
 const app = express();
+require('./auth')
+const url = 'mongodb+srv://architlall:architlall@cluster0.dlf2m.mongodb.net/?retryWrites=true&w=majority';
 
-const url = 'mongodb://localhost:27017/blog';
-const connect = mongoose.connect(url);
-
-var usersRouter = require('./routes/user');
+// const users = require('./routes/users')
+// var usersRouter = require('./routes/user');
 const blogRouter = require('./routes/Blogs');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 
 const server = http.createServer(app);
 
-server.listen(port, hostname, ()=>{
-    console.log(`server running at https://${hostname}/${port}/`)
-})
+mongoose.connect(url,{useNewUrlParser: true, useUnifiedTopology: true})
+ .then((result)=> 
+    app.listen((port),function(){
+        console.log(`Server started at http://localhost:${port}`)
+    })
+  )
 
-connect.then((url) =>{
-    console.log('connected to server');
-})
-
-app.use(passport.initialize());
-app.use(logger('dev'));
+  app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+function isLoggedIn(req, res, next) {
+  req.user ? next() : res.sendStatus(401);
+}
 
-app.use(function (req, res, next) {
-    //Enabling CORS
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
-    next();
-    });
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-//Method Override
-app.use(methodOverride((req,res)=>{
-  if(req.body && typeof req.body==='object' && '_method' in req.body){
-    let method = req.body._method
-    delete req.body._method
-    return method
-  }
-}))
 
-app.use('/users', usersRouter);
+app.get('/', (req, res) => {
+  res.send('<a href="/auth/google">Authenticate with Google</a>');
+});
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: [ 'email', 'profile' ] }
+));
+
+app.get( '/auth/google/callback',
+  passport.authenticate( 'google', {
+    successRedirect: '/protected',
+    failureRedirect: '/auth/google/failure'
+  })
+);
+
+app.get('/protected', isLoggedIn, (req, res) => {
+  res.send(`Hello ${req.user.displayName}`);
+});
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  req.session.destroy();
+  res.send('Goodbye!');
+});
+
+app.get('/auth/google/failure', (req, res) => {
+  res.send('Failed to authenticate..');
+});
+
+
+
 app.use('/blog',blogRouter);
 
 module.exports = app;
