@@ -9,27 +9,26 @@ var logger = require('morgan');
 var passport = require('passport');
 const mongoose = require('mongoose');
 const hostname = 'localhost';
-const port = process.env.PORT || 3000;
+const {connectDB} = require('./config/db')
+const port = 5000;
 const app = express();
 require('./auth')
-const url = 'mongodb+srv://architlall:architlall@cluster0.dlf2m.mongodb.net/?retryWrites=true&w=majority';
 
+
+connectDB()
 // const users = require('./routes/users')
 // var usersRouter = require('./routes/user');
 const blogRouter = require('./routes/Blogs');
+const userRouter = require('./routes/User');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 
 const server = http.createServer(app);
 
-mongoose.connect(url,{useNewUrlParser: true, useUnifiedTopology: true})
- .then((result)=> 
-    app.listen((port),function(){
-        console.log(`Server started at http://localhost:${port}`)
-    })
-  )
+app.listen(port, () => console.log(`Server running on port ${port}`))
 
-  app.use(logger('dev'));
+
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -72,7 +71,7 @@ app.get('/auth/google/failure', (req, res) => {
 });
 
 
-
+app.use('/user',userRouter);
 app.use('/blog',blogRouter);
 
 module.exports = app;

@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 // var authenticate = require('../authenticate');
 const Blogs = require('../models/blog');
 const user = require('../models/user');
-
+var authenticate = require('../authenticate');
 const blogRouter = express.Router();
 
 blogRouter.use(express.json());
 
 blogRouter.route('/')
-.get( (req,res,next) => {
+.get((req,res,next) => {
     Blogs.find({})
     // .populate('comments.author')
     .then((blogs) => {
@@ -22,7 +22,7 @@ blogRouter.route('/')
 })
 
 blogRouter.route('/')
-.post( (req,res,next) => {
+.post( authenticate.verifyUser,(req,res,next) => {
     Blogs.create(req.body)
     .then((blog) => {
         console.log('Blog Created ', blog);
@@ -58,7 +58,7 @@ blogRouter.route('/:blogId')
 //     .catch((err) => next(err));
 // })
 
-.delete( (req, res, next) => {
+.delete(authenticate.verifyUser, (req, res, next) => {
     Blogs.findByIdAndRemove(req.params.blogId)
     .then((resp) => {
         res.statusCode = 200;
@@ -87,7 +87,7 @@ blogRouter.route('/:blogId/comments')
     }, (err) => next(err))
     .catch((err) => next(err));
 })
-.post( (req, res, next) => {
+.post( authenticate.verifyUser,(req, res, next) => {
     Blogs.findById(req.params.blogId)
     .then((blog) => {
         if (blog != null) {
@@ -113,7 +113,7 @@ blogRouter.route('/:blogId/comments')
     .catch((err) => next(err));
 })
 
-.delete( (req, res, next) => {
+.delete( authenticate.verifyUser,(req, res, next) => {
     Blogs.findById(req.params.blogId)
     .then((blog) => {
         if (blog != null) {
@@ -162,7 +162,7 @@ blogRouter.route('/:blogId/comments/:commentId')
     .catch((err) => next(err));
 })
 
-.put( (req, res, next) => {
+.put( authenticate.verifyUser,(req, res, next) => {
    
     Blogs.findById(req.params.blogId)
     .then((blog) => {
@@ -207,7 +207,7 @@ blogRouter.route('/:blogId/comments/:commentId')
 )
 
 
-.delete(
+.delete(authenticate.verifyUser,
      (req, res, next) => {
     
     Blogs.findById(req.params.blogId)
