@@ -11,8 +11,8 @@ blogRouter.use(express.json());
 
 blogRouter.route('/')
 .get((req,res,next) => {
-    Blogs.find({})
-    // .populate('comments.author')
+    Blogs.find({ispublished : true})
+    .populate('comments.author')
     .then((blogs) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -58,7 +58,7 @@ blogRouter.route('/:blogId')
 //     .catch((err) => next(err));
 // })
 
-.delete(authenticate.verifyUser, (req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Blogs.findByIdAndRemove(req.params.blogId)
     .then((resp) => {
         res.statusCode = 200;
@@ -113,7 +113,7 @@ blogRouter.route('/:blogId/comments')
     .catch((err) => next(err));
 })
 
-.delete( authenticate.verifyUser,(req, res, next) => {
+.delete( authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
     Blogs.findById(req.params.blogId)
     .then((blog) => {
         if (blog != null) {
@@ -249,6 +249,46 @@ blogRouter.route('/:blogId/comments/:commentId')
 }
 
 );
+
+
+blogRouter.route('/admin')
+.get(authenticate.verifyAdmin, (req,res,next) => {
+    Blogs.find({ispublished : false})
+    // .populate('comments.author')
+    .then((blogs) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(blogs);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+
+
+blogRouter.route('/admin/:blogId')
+.get(authenticate.verifyAdmin, (req,res,next) => {
+    Blogs.findById(req.params.blogId)
+    .populate('comments.author')
+    .then((blog) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(blog);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+
+.put(authenticate.verifyAdmin, (req, res, next) => {
+    Blogs.findById(req.params.id)
+        .then((blog)=>{
+            blog.ispublished = true;
+            blog.save()
+        })
+    .then((blog) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(blog);
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
 
 
 
