@@ -13,7 +13,7 @@ const {connectDB} = require('./config/db')
 const port = 5000;
 const app = express();
 require('./auth')
-
+var bodyParser = require('body-parser');
 
 connectDB()
 // const users = require('./routes/users')
@@ -29,8 +29,8 @@ app.listen(port, () => console.log(`Server running on port ${port}`))
 
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
 function isLoggedIn(req, res, next) {
   req.user ? next() : res.sendStatus(401);
