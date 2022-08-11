@@ -21,10 +21,10 @@ blogRouter.route('/')
     })
 
 blogRouter.route('/')
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post(authenticate.verifyUser, (req, res, next) =>{
         Blogs.create(req.body)
-            .then((blog) => {
-                try {
+            .then( async (blog)=>{
+                try{
                     const fileStr = req.body.body;
                     const image = JSON.parse(fileStr)
                     const uploadResponse = await cloudinary.uploader.upload(image.data,
