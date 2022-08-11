@@ -36,6 +36,8 @@ userRouter.post('/signup', (req, res, next) => {
     else {
       if (req.body.name)
         user.name = req.body.name;
+        if (req.body.email)
+        user.email = req.body.email;
       user.save((err, user) => {
         if (err) {
           res.statusCode = 500;
@@ -46,7 +48,7 @@ userRouter.post('/signup', (req, res, next) => {
         passport.authenticate('local')(req, res, () => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.json({success: true, status: 'Registration Successful!'});
+          res.json({user, success: true, status: 'Registration Successful!'});
         });
       });
     }

@@ -28,7 +28,7 @@ const server = http.createServer(app);
 
 app.listen(port, () => console.log(`Server running on port ${port}`))
 
-app.use(cors)
+app.use(cors())
 app.use(logger('dev'));
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
