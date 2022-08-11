@@ -30,11 +30,11 @@ var blogSchema = new Schema({
     },
     content:{
         type: String,
-        required: true
+        
     },
     type_of_post: {
         type: String,
-        required: true
+        
     },
     likes: {
         type: Number,

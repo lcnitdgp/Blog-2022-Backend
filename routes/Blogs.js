@@ -25,7 +25,7 @@ blogRouter.route('/')
         Blogs.create(req.body)
             .then( async (blog)=>{
                 try{
-                    const fileStr = req.body.body;
+                    const fileStr = req.body.image;
                     const image = JSON.parse(fileStr)
                     const uploadResponse = await cloudinary.uploader.upload(image.data,
                         result => {
