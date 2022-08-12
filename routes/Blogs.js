@@ -26,6 +26,25 @@ blogRouter.route('/getallblogs')
             .catch((err) => next(err));
     })
 
+    blogRouter.route('/like')
+    .post((req, res, next) => {
+        Blogs.find({id : req.body.id})
+           // .populate('comments.author')
+            .then((blog) => {
+                if(blog)
+                {
+                    blog.likes = blog.likes+1;
+                    blog.save().then((blog)=>{
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(blog);
+                    })
+                   
+            }
+            }, (err) => next(err))
+            .catch((err) => next(err));
+    })
+
     blogRouter.route('/unpublished')
     .get((req, res, next) => {
         Blogs.find({ ispublished: false})
