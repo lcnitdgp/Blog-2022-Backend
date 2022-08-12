@@ -81,4 +81,17 @@ userRouter.get('/logout', (req, res) => {
 });
 
 
+userRouter.put('/subscribe', (req, res) => {
+  User.find({_id: req.user._id}).then((user)=>{
+    user.isSubscribed = true;
+    user.save().then((user)=>{
+      res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.json(user)
+    })
+  })
+});
+
+
+
 module.exports = userRouter;

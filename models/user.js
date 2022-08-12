@@ -26,6 +26,10 @@ var userSchema = new Schema({
   isAdmin :{
     type: Boolean,
     default: false
+  },
+  isSubscribed: {
+    type: Boolean,
+    defalut: false
   }
 },
 { timestamps: true }

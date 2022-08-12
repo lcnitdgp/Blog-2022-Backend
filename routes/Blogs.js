@@ -29,7 +29,7 @@ blogRouter.route('/getallblogs')
     blogRouter.route('/unpublished')
     .get((req, res, next) => {
         Blogs.find({ ispublished: false})
-            .populate('comments.author')
+           // .populate('comments.author')
             .then((blogs) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -76,7 +76,7 @@ blogRouter.route('/')
 blogRouter.route('/:blogId')
     .get((req, res, next) => {
         Blogs.findById(req.params.blogId)
-            .populate('comments.author')
+            //.populate('comments.author')
             .then((blog) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
