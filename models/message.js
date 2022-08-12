@@ -15,6 +15,6 @@ message:{
 },
 { timestamps: true }
 );
-messageSchema.plugin(passportLocalMongoose);
+
 const Message = mongoose.model('message', messageSchema);
 module.exports = Message;

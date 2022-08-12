@@ -17,7 +17,7 @@ cloudinary.config({
 blogRouter.route('/getallblogs')
     .get((req, res, next) => {
         Blogs.find({})
-            .populate('comments.author')
+           // .populate('comments.author')
             .then((blogs) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -279,7 +279,7 @@ blogRouter.route('/:blogId/comments/:commentId')
 
 
 blogRouter.route('/admin')
-    .get(authenticate.verifyAdmin, (req, res, next) => {
+    .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Blogs.find({ ispublished: false })
             // .populate('comments.author')
             .then((blogs) => {
@@ -292,7 +292,7 @@ blogRouter.route('/admin')
 
 
 blogRouter.route('/admin/:blogId')
-    .get(authenticate.verifyAdmin, (req, res, next) => {
+    .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Blogs.findById(req.params.blogId)
             .populate('comments.author')
             .then((blog) => {
@@ -303,7 +303,7 @@ blogRouter.route('/admin/:blogId')
             .catch((err) => next(err));
     })
 
-    .put(authenticate.verifyAdmin, (req, res, next) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Blogs.findById(req.params.id)
             .then((blog) => {
                 blog.ispublished = true;
