@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cloudinary = require('cloudinary')
 const mongoose = require('mongoose');
 const Blogs = require('../models/blog');
 const user = require('../models/user');
@@ -7,10 +8,27 @@ var authenticate = require('../authenticate');
 const blogRouter = express.Router();
 
 blogRouter.use(express.json());
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+  });
 
-blogRouter.route('/')
+blogRouter.route('/getallblogs')
     .get((req, res, next) => {
-        Blogs.find({ ispublished: true })
+        Blogs.find({})
+            .populate('comments.author')
+            .then((blogs) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(blogs);
+            }, (err) => next(err))
+            .catch((err) => next(err));
+    })
+
+    blogRouter.route('/unpublished')
+    .get((req, res, next) => {
+        Blogs.find({ ispublished: false})
             .populate('comments.author')
             .then((blogs) => {
                 res.statusCode = 200;
@@ -26,8 +44,8 @@ blogRouter.route('/')
             .then( async (blog)=>{
                 try{
                     const fileStr = req.body.image;
-                    const image = JSON.parse(fileStr)
-                    const uploadResponse = await cloudinary.uploader.upload(image.data,
+                   
+                    const uploadResponse = await cloudinary.uploader.upload(fileStr,
                         result => {
                             if (result) {
                                 blog.image = result.url;
