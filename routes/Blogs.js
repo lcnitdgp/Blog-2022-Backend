@@ -28,7 +28,7 @@ blogRouter.route('/getallblogs')
 
     blogRouter.route('/like')
     .post((req, res, next) => {
-        Blogs.find({id : req.body.id})
+        Blogs.findById(req.body.id)
            // .populate('comments.author')
             .then((blog) => {
                 if(blog)
