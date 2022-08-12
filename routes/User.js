@@ -80,7 +80,6 @@ userRouter.get('/logout', (req, res) => {
   }
 });
 
-
 userRouter.put('/subscribe', (req, res) => {
   User.find({_id: req.user._id}).then((user)=>{
     user.isSubscribed = true;
@@ -91,6 +90,7 @@ userRouter.put('/subscribe', (req, res) => {
     })
   })
 });
+
 
 
 
