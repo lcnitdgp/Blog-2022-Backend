@@ -21,6 +21,7 @@ connectDB()
 // var usersRouter = require('./routes/user');
 const blogRouter = require('./routes/Blogs');
 const userRouter = require('./routes/User');
+const msgRouter = require('./routes/message');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 
@@ -74,6 +75,7 @@ app.get('/auth/google/failure', (req, res) => {
 
 app.use('/user',userRouter);
 app.use('/blog',blogRouter);
+app.use('/message',msgRouter);
 
 module.exports = app;
 
