@@ -80,8 +80,8 @@ userRouter.get('/logout', (req, res) => {
   }
 });
 
-userRouter.put('/subscribe', (req, res) => {
-  User.find({_id: req.user._id}).then((user)=>{
+userRouter.put('/subscribe/:id', (req, res) => {
+  User.find({_id: req.params._id}).then((user)=>{
     user.isSubscribed = true;
     user.save().then((user)=>{
       res.statusCode = 200;
