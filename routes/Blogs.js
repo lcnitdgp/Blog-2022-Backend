@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cloudinary = require('cloudinary')
 const mongoose = require('mongoose');
 const Blogs = require('../models/blog');
-const user = require('../models/user');
+const User = require('../models/user');
 var authenticate = require('../authenticate');
 const blogRouter = express.Router();
 
@@ -33,12 +33,28 @@ blogRouter.route('/getallblogs')
             .then((blog) => {
                 if(blog)
                 {
-                    blog.likes = blog.likes+1;
+                    if(!blog.likedBy.includes(req.body.user_id)){
+                        blog.likes = blog.likes+1;
+                        blog.likedBy.push(req.body.user_id);
                     blog.save().then((blog)=>{
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json(blog);
+                        res.json("liked", blog);
                     })
+                    }
+                    else{
+                        blog.likes = blog.liked-1;
+                        var index = blog.likedBy.indexOf(req.body.user_id);
+                        if (index > -1) {
+                            blog.likedBy.splice(index, 1);
+                        }
+                        blog.save().then((blog)=>{
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json("disliked", blog);
+                        })
+                    }
+                    
                    
             }
             }, (err) => next(err))

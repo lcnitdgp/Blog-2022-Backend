@@ -40,6 +40,7 @@ var blogSchema = new Schema({
         type: Number,
         default: 0
     },
+    likedBy: [],
     ispublished: {
         type: Boolean,
         default: false
