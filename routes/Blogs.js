@@ -39,11 +39,11 @@ blogRouter.route('/getallblogs')
                     blog.save().then((blog)=>{
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json("liked", blog);
+                        res.json(blog);
                     })
                     }
                     else{
-                        blog.likes = blog.liked-1;
+                        blog.likes = blog.likes-1;
                         var index = blog.likedBy.indexOf(req.body.user_id);
                         if (index > -1) {
                             blog.likedBy.splice(index, 1);
@@ -51,7 +51,7 @@ blogRouter.route('/getallblogs')
                         blog.save().then((blog)=>{
                             res.statusCode = 200;
                             res.setHeader('Content-Type', 'application/json');
-                            res.json("disliked", blog);
+                            res.json(blog);
                         })
                     }
                     
