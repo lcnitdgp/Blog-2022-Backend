@@ -81,13 +81,17 @@ userRouter.get('/logout', (req, res) => {
 });
 
 userRouter.put('/subscribe/:id', (req, res) => {
-  User.find({_id: req.params._id}).then((user)=>{
-    user.isSubscribed = true;
+  console.log(req.body)
+  User.findById(req.body.uid).then((user)=>{
+ if(user)
+ {  
+   user.isSubscribed = true,
     user.save().then((user)=>{
       res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.json(user)
+      res.setHeader('Content-Type', 'application/json');
+      res.json(user)
     })
+  }
   })
 });
 
