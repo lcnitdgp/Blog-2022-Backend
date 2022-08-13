@@ -85,15 +85,20 @@ blogRouter.route('/unpublished')
     })
 blogRouter.route('/publishblog/:blogId')
     .post((req, res, next) => {
-        Blogs.find(req.params.blogId)
+        Blogs.findById(req.params.blogId)
             //.populate('comments.author')
             .then((blog) => {
-                blog.ispublished = true;
-                blog.save().then((blog) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(blogs);
+                if(blog)
+                {
+                    console.log(blog)
+                    blog.isPublished = true;
+                    blog.save()
+                        .then((blog) => {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(blogs);
                 })
+            }
 
             }, (err) => next(err))
             .catch((err) => next(err));
