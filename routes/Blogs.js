@@ -154,7 +154,7 @@ blogRouter.route('/:blogId/comments')
             .then((blog) => {
                 console.log(blog)
                 if (blog != null) {
-                    blog.comments.author = req.body.user_id;
+                    // blog.comments.author = req.body.user_id;
                     blog.comments.push({author: req.body.user_id, comment: req.body.comment});
                     blog.save()
                         .then((blog) => {
