@@ -155,17 +155,21 @@ blogRouter.route('/:blogId/comments')
                 console.log(blog)
                 if (blog != null) {
                     // blog.comments.author = req.body.user_id;
-                    blog.comments.push({author: req.body.user_id, comment: req.body.comment});
-                    blog.save()
+                    User.findById(req.body.user_id).then((user)=>
+                     {
+                         blog.comments.push({author: user.name, comment: req.body.comment});
+                     blog.save()
                         .then((blog) => {
                             console.log(blog)
-                            bloges.findById(req.params.blogId)
+                            Blogs.findById(req.params.blogId)
                                 .then((blog) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
                                     res.json(blog);
                                 })
                         }, (err) => next(err));
+                    })
+                  
                 }
                 else {
                     err = new Error('blog ' + req.params.blogId + ' not found');
