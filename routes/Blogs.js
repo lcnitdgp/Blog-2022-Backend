@@ -156,8 +156,9 @@ blogRouter.route('/:blogId/comments')
                 if (blog != null) {
                     // blog.comments.author = req.body.user_id;
                     User.findById(req.body.user_id).then((user)=>
-                     {
-                         blog.comments.push({author: user.name, comment: req.body.comment});
+                     { 
+                        console.log(user.name);
+                         blog.comments.push({author: user.name , comment: req.body.comment});
                      blog.save()
                         .then((blog) => {
                             console.log(blog)
