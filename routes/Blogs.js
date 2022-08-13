@@ -134,7 +134,7 @@ blogRouter.route('/:blogId')
 blogRouter.route('/:blogId/comments')
     .get((req, res, next) => {
         Blogs.findById(req.params.blogId)
-            .populate('comments.author')
+            //.populate('comments.author')
             .then((blog) => {
                 if (blog != null) {
                     res.statusCode = 200;
@@ -149,16 +149,15 @@ blogRouter.route('/:blogId/comments')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post( (req, res, next) => {
         Blogs.findById(req.params.blogId)
             .then((blog) => {
                 if (blog != null) {
-                    req.body.author = req.user._id;
-                    blog.comments.push(req.body);
+                    blog.author = req.body.user_id;
+                    blog.comments.push(req.body.comment);
                     blog.save()
                         .then((blog) => {
                             bloges.findById(blog._id)
-                                .populate('comments.author')
                                 .then((blog) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
@@ -203,7 +202,7 @@ blogRouter.route('/:blogId/comments')
 blogRouter.route('/:blogId/comments/:commentId')
     .get((req, res, next) => {
         Blogs.findById(req.params.blogId)
-            .populate('comments.author')
+            //.populate('comments.author')
             .then((blog) => {
                 if (blog != null && blog.comments.id(req.params.commentId) != null) {
                     res.statusCode = 200;
@@ -329,7 +328,7 @@ blogRouter.route('/admin')
 blogRouter.route('/admin/:blogId')
     .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Blogs.findById(req.params.blogId)
-            .populate('comments.author')
+           // .populate('comments.author')
             .then((blog) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
