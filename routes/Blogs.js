@@ -152,12 +152,13 @@ blogRouter.route('/:blogId/comments')
     .post( (req, res, next) => {
         Blogs.findById(req.params.blogId)
             .then((blog) => {
+                console.log(blog)
                 if (blog != null) {
                     blog.author = req.body.user_id;
                     blog.comments.push(req.body.comment);
                     blog.save()
                         .then((blog) => {
-                            bloges.findById(blog._id)
+                            bloges.findById(req.params.blogId)
                                 .then((blog) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
