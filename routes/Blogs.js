@@ -154,10 +154,11 @@ blogRouter.route('/:blogId/comments')
             .then((blog) => {
                 console.log(blog)
                 if (blog != null) {
-                    blog.author = req.body.user_id;
+                    blog.comments.author = req.body.user_id;
                     blog.comments.push(req.body.comment);
                     blog.save()
                         .then((blog) => {
+                            console.log(blog)
                             bloges.findById(req.params.blogId)
                                 .then((blog) => {
                                     res.statusCode = 200;
