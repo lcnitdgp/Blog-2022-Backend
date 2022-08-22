@@ -15,42 +15,43 @@ var commentSchema = new Schema({
     timestamps: true
 });
 
-var blogSchema = new Schema({
-    author:{
-          type : String,
-          required : true
+var blogSchema = new Schema(
+  {
+    author: {
+      type: String,
+      required: true,
     },
-    title:{
-        type : String,
-        required : true
+    title: {
+      type: String,
+      required: true,
     },
-    image:{
-        type: String,
-        required: true
+    image: {
+      type: String,
+      required: true,
     },
-    content:{
-        type: String,
-        
+    content: {
+      type: String,
     },
     type_of_post: {
-        type: String,
-        
+      type: String,
     },
     likes: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
+   
     likedBy: [],
     
     ispublished: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-    comments: [commentSchema]
-
-},{
-    timestamps: true
-});
+    comments: [commentSchema],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 var Blogs = mongoose.model('Blog', blogSchema);
 
