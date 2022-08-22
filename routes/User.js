@@ -65,21 +65,6 @@ userRouter.post('/login', passport.authenticate('local'), (req, res) => {
   
 });
   
-   
-
-userRouter.get('/logout', (req, res) => {
-  if (req.session) {
-    req.session.destroy();
-    res.clearCookie('session-id');
-    res.redirect('/');
-  }
-  else {
-    var err = new Error('You are not logged in!');
-    err.status = 403;
-    next(err);
-  }
-});
-
 userRouter.put('/subscribe/:id', (req, res) => {
   console.log(req.body)
   User.findById(req.body.uid).then((user)=>{
@@ -94,6 +79,21 @@ userRouter.put('/subscribe/:id', (req, res) => {
   }
   })
 });
+
+
+userRouter.get('/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy();
+    res.clearCookie('session-id');
+    res.redirect('/');
+  }
+  else {
+    var err = new Error('You are not logged in!');
+    err.status = 403;
+    next(err);
+  }
+});
+
 
 
 

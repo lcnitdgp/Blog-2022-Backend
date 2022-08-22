@@ -19,6 +19,7 @@ blogRouter.route("/getallblogs").get((req, res, next) => {
     // .populate('comments.author')
     .then(
       (blogs) => {
+        console.log(blogs)
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json(blogs);
@@ -87,7 +88,7 @@ blogRouter.route("/publishblog/:blogId").post(authenticate.verifyUser, authentic
           blog.save().then((blog) => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
-            res.json(blogs);
+            res.json(blog);
           });
         }
       },
