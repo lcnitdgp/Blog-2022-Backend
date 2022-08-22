@@ -19,7 +19,6 @@ blogRouter.route("/getallblogs").get((req, res, next) => {
     // .populate('comments.author')
     .then(
       (blogs) => {
-        console.log(blogs)
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.json(blogs);
@@ -31,7 +30,6 @@ blogRouter.route("/getallblogs").get((req, res, next) => {
 
 blogRouter.route("/like").post(authenticate.verifyUser, (req, res, next) => {
   Blogs.findById(req.body.id)
-    // .populate('comments.author')
     .then(
       (blog) => {
         if (blog) {
@@ -62,7 +60,7 @@ blogRouter.route("/like").post(authenticate.verifyUser, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-blogRouter.route("/unpublished").get(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
+blogRouter.route("/unpublished").get((req, res, next) => {
   Blogs.find({ ispublished: false })
     //.populate('comments.author')
     .then(
@@ -190,21 +188,20 @@ blogRouter
       .catch((err) => next(err));
   })
   .post(authenticate.verifyUser, (req, res, next) => {
+    console.log(req.headers)
     Blogs.findById(req.params.blogId)
       .then(
         (blog) => {
-          console.log(blog);
+         
           if (blog != null) {
-            // blog.comments.author = req.body.user_id;
             User.findById(req.body.user_id).then((user) => {
-              console.log(user.name);
               blog.comments.push({
                 author: user.name,
                 comment: req.body.comment,
               });
               blog.save().then(
                 (blog) => {
-                  console.log(blog);
+                 
                   Blogs.findById(req.params.blogId).then((blog) => {
                     res.statusCode = 200;
                     res.setHeader("Content-Type", "application/json");
@@ -373,21 +370,21 @@ blogRouter
       .catch((err) => next(err));
   });
 
-blogRouter
-  .route("/admin")
-  .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Blogs.find({ ispublished: false })
-      // .populate('comments.author')
-      .then(
-        (blogs) => {
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.json(blogs);
-        },
-        (err) => next(err)
-      )
-      .catch((err) => next(err));
-  });
+// blogRouter
+//   .route("/admin")
+//   .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+//     Blogs.find({ ispublished: false })
+//       // .populate('comments.author')
+//       .then(
+//         (blogs) => {
+//           res.statusCode = 200;
+//           res.setHeader("Content-Type", "application/json");
+//           res.json(blogs);
+//         },
+//         (err) => next(err)
+//       )
+//       .catch((err) => next(err));
+//   });
 
 blogRouter
   .route("/admin/:blogId")
