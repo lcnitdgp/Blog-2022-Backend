@@ -60,6 +60,23 @@ blogRouter.route("/like").post(authenticate.verifyUser, (req, res, next) => {
     .catch((err) => next(err));
 });
 
+blogRouter.route("/isliked").get(authenticate.verifyUser, (req,res,next)=>{
+  Blogs.findById(req.body.id)
+    .then(
+      (blog) => {
+        if (blog) {
+          if (!blog.likedBy.includes(req.body.user_id)) {
+           res.json(false)
+          } else {
+        res.json(true)
+          }
+        }
+      },
+      (err) => next(err)
+    )
+    .catch((err) => next(err));
+})
+
 blogRouter.route("/unpublished").get((req, res, next) => {
   Blogs.find({ ispublished: false })
     //.populate('comments.author')
