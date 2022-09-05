@@ -28,7 +28,7 @@ blogRouter.route("/getallblogs").get((req, res, next) => {
     .catch((err) => next(err));
 });
 
-blogRouter.route("/like").post(authenticate.verifyUser, (req, res, next) => {
+blogRouter.route("/like").post( (req, res, next) => {
   Blogs.findById(req.body.id)
     .then(
       (blog) => {
@@ -60,15 +60,15 @@ blogRouter.route("/like").post(authenticate.verifyUser, (req, res, next) => {
     .catch((err) => next(err));
 });
 
-blogRouter.route("/isliked").get(authenticate.verifyUser, (req,res,next)=>{
+blogRouter.route("/isliked").get( (req,res,next)=>{
   Blogs.findById(req.body.id)
     .then(
       (blog) => {
         if (blog) {
           if (!blog.likedBy.includes(req.body.user_id)) {
-           res.json(false)
+           res.send(false)
           } else {
-        res.json(true)
+        res.send(true)
           }
         }
       },
