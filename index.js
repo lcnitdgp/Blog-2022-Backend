@@ -10,7 +10,7 @@ var passport = require('passport');
 const mongoose = require('mongoose');
 const hostname = 'localhost';
 const {connectDB} = require('./config/db')
-const port = 5005;
+const port = 5000;
 const app = express();
 const cron = require('node-cron');
 
