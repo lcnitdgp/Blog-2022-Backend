@@ -101,9 +101,9 @@ userRouter.post("/signup", (req, res, next) => {
   );
 });
 
-userRouter.get("/verify/:uniqueString", async (req, res) => {
+userRouter.get("/verify", async (req, res) => {
   //getting the string
-  const { uniqueString } = req.params; //check is there is anyone with this string
+  const { uniqueString } = req.body.uniqueString; //check is there is anyone with this string
   const user = await User.findOne({ uniqueString: uniqueString });
   if (user) {
     //if there is anyone, mark them verified
