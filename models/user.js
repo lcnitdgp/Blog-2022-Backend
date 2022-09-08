@@ -30,6 +30,13 @@ var userSchema = new Schema({
   isSubscribed: {
     type: Boolean,
     defalut: false
+  },
+  isValid : {
+    type: Boolean,
+    default :false
+  },
+  uniqueString : {
+    type: String,
   }
 },
 { timestamps: true }

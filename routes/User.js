@@ -27,7 +27,7 @@ let mailOptions = {
   text: "Some content to send",
 };
 
-const sendMail = (email, uniqueString) => {
+const sendEmail = (email, uniqueString) => {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -66,7 +66,6 @@ const isValid = false;
 userRouter.post("/signup", (req, res, next) => {
   User.register(
     new User(isValid, uniqueString, ...req.body),
-    req.body.password,
     (err, user) => {
       if (err) {
         res.statusCode = 500;
