@@ -10,10 +10,11 @@ var passport = require('passport');
 const mongoose = require('mongoose');
 const hostname = 'localhost';
 const {connectDB} = require('./config/db')
-const port = 5000;
+const port = 5005;
 const app = express();
 const cron = require('node-cron');
 
+var authenticate = require('./authenticate');
 const cors = require('cors')
 require('./auth')
 var bodyParser = require('body-parser');
@@ -52,6 +53,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/auth/google',
+// passport.authenticate('google',  { scope: [ 'email', 'profile' ] })
+//   res.statusCode = 200;
+//   res.setHeader('Content-Type', 'application/json');
+//   res.json({user, success: true, status: 'Registration Successful!'});
+// }));
   passport.authenticate('google', { scope: [ 'email', 'profile' ] }
 ));
 
