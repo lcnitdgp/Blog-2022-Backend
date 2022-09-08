@@ -19,15 +19,9 @@ const randString = () => {
   }
   return randStr;
 };
-
-let mailOptions = {
-  from: "archit10dgp@gmail.com",
-  to: "kaushalbaid16@gmail.com",
-  subject: "Email from Node-App: A Test Message!",
-  text: "Some content to send",
-};
-
-const sendEmail = (email, uniqueString) => {
+const sendMail = (email, uniqueString) => {
+  console.log("email sentttttttttttttttttttt");
+  console.log(email)
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -38,6 +32,13 @@ const sendEmail = (email, uniqueString) => {
       rejectUnauthorized: false,
     },
   });
+  let mailOptions = {
+    from: "archit10dgp@gmail.com",
+    to: email,
+    subject: "Email confirmation",
+    text: `The OTP to verify your account is ${uniqueString}`,
+  };
+
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) console.log(error);
     else console.log("Email sent: " + info.response);
@@ -60,31 +61,42 @@ userRouter
       .catch((err) => next(err));
   });
 
-
-const uniqueString = randString(); //defined elsewhere
-const isValid = false;
 userRouter.post("/signup", (req, res, next) => {
+  
   User.register(
-    new User(isValid, uniqueString, ...req.body),
+    new User({ username: req.body.username }),
+    req.body.password,
     (err, user) => {
+      console.log(user);
       if (err) {
         res.statusCode = 500;
         res.setHeader("Content-Type", "application/json");
         res.json({ err: err });
       } else {
-        if (req.body.email) {
-          const { email } = req.body.email;
-          user.email = req.body.email;
-        }
-        user.save((err, user) => {
-          sendEmail(email); //function to send email to the given address
-          res.redirect("back");
-          if (err) {
-            res.statusCode = 500;
-            res.setHeader("Content-Type", "application/json");
-            res.json({ err: err });
-            return;
-          }
+        if (req.body.name) user.name = req.body.name;
+        console.log(req.body.email +'2')
+        const email = req.body.email;
+       
+        console.log(email)
+        user.email = req.body.email;
+
+        user.isValid = false;
+        uniqueString = randString();
+        user.uniqueString = uniqueString;
+        //         if (req.body.email) {
+        //           const { email } = req.body.email;
+        //         }
+        user.save(async (err, user) => {
+          console.log(email)
+          await sendMail(email, uniqueString); //function to send email to the given address
+          // res.send("email success");
+          // res.redirect("back");
+          // if (err) {
+          //   res.statusCode = 500;
+          //   res.setHeader("Content-Type", "application/json");
+          //   res.json({ err: err });
+          //   return;
+          // }
           passport.authenticate("local")(req, res, () => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
@@ -100,9 +112,50 @@ userRouter.post("/signup", (req, res, next) => {
   );
 });
 
-userRouter.get("/verify", async (req, res) => {
+// userRouter.post("/signup", (req, res, next) => {
+//   console.log("request received");
+//   User.register(
+//     new User({ name: req.body.name }),
+//     req.body.password,
+//     (err, user) => {
+//       console.log(user);
+//       if (err) {
+//         res.statusCode = 500;
+//         res.setHeader("Content-Type", "application/json");
+//         res.json({ err: err });
+//       } else {
+//         user.isValid = false;
+//         user.uniqueString = randString();
+//         if (req.body.email) {
+//           const { email } = req.body.email;
+//         }
+//         user.save((err, user) => {
+//           sendEmail(email); //function to send email to the given address
+//           res.redirect("back");
+//           if (err) {
+//             res.statusCode = 500;
+//             res.setHeader("Content-Type", "application/json");
+//             res.json({ err: err });
+//             return;
+//           }
+//           passport.authenticate("local")(req, res, () => {
+//             res.statusCode = 200;
+//             res.setHeader("Content-Type", "application/json");
+//             res.json({
+//               user,
+//               success: true,
+//               status: "Registration Successful!",
+//             });
+//           });
+//         });
+//       }
+//     }
+//   );
+// });
+
+userRouter.get("/verify/:uniqueString", async (req, res) => {
   //getting the string
-  const { uniqueString } = req.body.uniqueString; //check is there is anyone with this string
+  const { uniqueString } = req.params; //check is there is anyone with this string
   const user = await User.findOne({ uniqueString: uniqueString });
   if (user) {
     //if there is anyone, mark them verified
