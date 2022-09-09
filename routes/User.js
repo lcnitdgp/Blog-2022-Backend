@@ -9,8 +9,8 @@ var nodemailer = require("nodemailer");
 userRouter.use(express.json());
 
 const randString = () => {
-  //considering a 8 length string
-  const len = 6;
+ 
+  let len = 6;
   let randStr = "";
   for (let i = 0; i < len; i++) {
     //ch = a number between 1 to 10
@@ -81,7 +81,7 @@ userRouter.post("/signup", (req, res, next) => {
         user.email = req.body.email;
 
         user.isValid = false;
-        uniqueString = randString();
+         const uniqueString = randString();
         user.uniqueString = uniqueString;
         //         if (req.body.email) {
         //           const { email } = req.body.email;
@@ -97,15 +97,7 @@ userRouter.post("/signup", (req, res, next) => {
           //   res.json({ err: err });
           //   return;
           // }
-          passport.authenticate("local")(req, res, () => {
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.json({
-              user,
-              success: true,
-              status: "Registration Successful!",
-            });
-          });
+       
         });
       }
     }
@@ -161,7 +153,15 @@ userRouter.get("/verify", async (req, res) => {
     //if there is anyone, mark them verified
     user.isValid = true;
     await user.save(); //redirect to the home or anywhere else
-    res.json("User verified")
+    passport.authenticate("local")(req, res, () => {
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.json({
+        user,
+        success: true,
+        status: "Registration Successful!",
+      });
+    });
   } else {
     //else send an error message
     res.json("User not found");
