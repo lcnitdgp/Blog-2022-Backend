@@ -9,19 +9,18 @@ var nodemailer = require("nodemailer");
 userRouter.use(express.json());
 
 const randString = () => {
- 
   let len = 6;
   let randStr = "";
   for (let i = 0; i < len; i++) {
     //ch = a number between 1 to 10
-    const ch = Math.floor(Math.random() * 10 + 1);
+    const ch = Math.floor(Math.random() * 10);
     randStr += ch;
   }
   return randStr;
 };
 const sendMail = (email, uniqueString) => {
   console.log("email sentttttttttttttttttttt");
-  console.log(email)
+  console.log(email);
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -62,7 +61,6 @@ userRouter
   });
 
 userRouter.post("/signup", (req, res, next) => {
-  
   User.register(
     new User({ username: req.body.username }),
     req.body.password,
@@ -74,21 +72,38 @@ userRouter.post("/signup", (req, res, next) => {
         res.json({ err: err });
       } else {
         if (req.body.name) user.name = req.body.name;
-        console.log(req.body.email +'2')
+        console.log(req.body.email + "2");
         const email = req.body.email;
-       
-        console.log(email)
+
+        console.log(email);
         user.email = req.body.email;
 
         user.isValid = false;
-         const uniqueString = randString();
+        const uniqueString = randString();
         user.uniqueString = uniqueString;
         //         if (req.body.email) {
         //           const { email } = req.body.email;
         //         }
         user.save(async (err, user) => {
-          console.log(email)
-          await sendMail(email, uniqueString); //function to send email to the given address
+          if (err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({ err: err });
+            return;
+          }
+          passport.authenticate("local")(req, res, () => {
+            res.statusCode = 200;
+            res.setHeader("Content-Type", "application/json");
+            res.json({
+              user,
+              success: true,
+              status: "Registration Successful!",
+            });
+          });
+          console.log(email);
+          await sendMail(email, uniqueString);
+          res.send("email sent");
+          //function to send email to the given address
           // res.send("email success");
           // res.redirect("back");
           // if (err) {
@@ -97,7 +112,6 @@ userRouter.post("/signup", (req, res, next) => {
           //   res.json({ err: err });
           //   return;
           // }
-       
         });
       }
     }
@@ -145,22 +159,31 @@ userRouter.post("/signup", (req, res, next) => {
 //   );
 // });
 
-userRouter.get("/verify", async (req, res) => {
+userRouter.post("/verify", async (req, res, next) => {
   //getting the string
-  const { uniqueString } = req.body.uniqueString; //check is there is anyone with this string
+  console.log(req.body.uniqueString);
+  const uniqueString = req.body.uniqueString;
+  console.log(uniqueString);
   const user = await User.findOne({ uniqueString: uniqueString });
   if (user) {
+    console.log(user);
     //if there is anyone, mark them verified
     user.isValid = true;
-    await user.save(); //redirect to the home or anywhere else
-    passport.authenticate("local")(req, res, () => {
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.json({
-        user,
-        success: true,
-        status: "Registration Successful!",
-      });
+    user.save((err, user) => {
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ err: err });
+        return;
+      } else {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json({
+          user,
+          success: true,
+          status: "Registration Successful!",
+        });
+      }
     });
   } else {
     //else send an error message
