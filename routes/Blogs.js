@@ -15,6 +15,7 @@ cloudinary.config({
 });
 
 blogRouter.route("/getallblogs").get((req, res, next) => {
+  console.log("helloooooooooooo")
   Blogs.find({ ispublished: true })
     // .populate('comments.author')
     .then(
