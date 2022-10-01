@@ -93,7 +93,7 @@ userRouter.post("/signup", (req, res, next) => {
           }
           console.log(email);
           await sendMail(email, uniqueString);
-          res.send("email sent");
+          // res.send("email sent");
           passport.authenticate("local")(req, res, () => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
