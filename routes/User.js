@@ -62,7 +62,7 @@ userRouter
 
 userRouter.post("/signup", (req, res, next) => {
   User.register(
-    new User({ username: req.body.username }),
+    new User({ name: req.body.name }),
     req.body.password,
     (err, user) => {
       console.log(user);
@@ -71,7 +71,7 @@ userRouter.post("/signup", (req, res, next) => {
         res.setHeader("Content-Type", "application/json");
         res.json({ err: err });
       } else {
-        if (req.body.name) user.name = req.body.name;
+        // if (req.body.name) user.name = req.body.name;
         console.log(req.body.email + "2");
         const email = req.body.email;
 
@@ -114,10 +114,11 @@ userRouter.post("/signup", (req, res, next) => {
 userRouter.post("/googlelogin", async(req,res,next)=>{
   User.register(
     new User({
-      googleId: profile.id,
-      name: profile.displayName,
-      email: profile.email,
-      image: profile.picture,
+      googleId: req.body.googleId,
+      name: req.body.name,
+      email: req.body.email,
+      image: req.body.image,
+      username: req.body.name,
       isValid: true
 
   }).save().then((newUser) => {
