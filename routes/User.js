@@ -113,19 +113,30 @@ userRouter.post("/signup", (req, res, next) => {
 
 userRouter.post("/googlelogin", async(req,res,next)=>{
   User.register(
-    new User({
-      googleId: req.body.googleId,
-      name: req.body.name,
-      email: req.body.email,
-      image: req.body.image,
-      username: req.body.name,
-      isValid: true
-
-  }).save().then((newUser) => {
-      console.log('new user created: ', newUser);
-      return done(null,profile)
-  })
-  )});
+    new User({ username: req.body.name }),
+    (err, user) => {
+      console.log(user);
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "application/json");
+        res.json({ err: err });
+      } else {
+        // if (req.body.name) user.name = req.body.name;
+        console.log(req.body.email + "2");
+     
+        user.email = req.body.email;
+        user.googleId = req.body.googleId;
+        user.name = req.body.name;
+        user.image = req.body.image;
+        user.isValid = true;
+        user.save().then((newUser) => {
+          console.log('new user created: ', newUser);
+          return done(null,profile)
+        })
+      }
+    }
+  });   
+  // })
   
          
   

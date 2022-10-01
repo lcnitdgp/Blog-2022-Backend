@@ -18,7 +18,6 @@ const cron = require("node-cron");
 var authenticate = require("./authenticate");
 const cors = require("cors");
 require("./auth");
-var bodyParser = require("body-parser");
 
 connectDB();
 // const users = require('./routes/users')
@@ -32,7 +31,6 @@ var FileStore = require("session-file-store")(session);
 const server = http.createServer(app);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
-app.use(express.bodyParser());
 app.use(cors());
 app.use(logger("dev"));
 app.use(bodyParser.json({ limit: "50mb" }));
