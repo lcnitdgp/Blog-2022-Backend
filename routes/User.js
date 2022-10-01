@@ -91,6 +91,9 @@ userRouter.post("/signup", (req, res, next) => {
             res.json({ err: err });
             return;
           }
+          console.log(email);
+          await sendMail(email, uniqueString);
+          res.send("email sent");
           passport.authenticate("local")(req, res, () => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
@@ -100,64 +103,32 @@ userRouter.post("/signup", (req, res, next) => {
               status: "Registration Successful!",
             });
           });
-          console.log(email);
-          await sendMail(email, uniqueString);
-          res.send("email sent");
-          //function to send email to the given address
-          // res.send("email success");
-          // res.redirect("back");
-          // if (err) {
-          //   res.statusCode = 500;
-          //   res.setHeader("Content-Type", "application/json");
-          //   res.json({ err: err });
-          //   return;
-          // }
+         
+        
         });
       }
     }
   );
 });
 
-// userRouter.post("/signup", (req, res, next) => {
-//   console.log("request received");
-//   User.register(
-//     new User({ name: req.body.name }),
-//     req.body.password,
-//     (err, user) => {
-//       console.log(user);
-//       if (err) {
-//         res.statusCode = 500;
-//         res.setHeader("Content-Type", "application/json");
-//         res.json({ err: err });
-//       } else {
-//         user.isValid = false;
-//         user.uniqueString = randString();
-//         if (req.body.email) {
-//           const { email } = req.body.email;
-//         }
-//         user.save((err, user) => {
-//           sendEmail(email); //function to send email to the given address
-//           res.redirect("back");
-//           if (err) {
-//             res.statusCode = 500;
-//             res.setHeader("Content-Type", "application/json");
-//             res.json({ err: err });
-//             return;
-//           }
-//           passport.authenticate("local")(req, res, () => {
-//             res.statusCode = 200;
-//             res.setHeader("Content-Type", "application/json");
-//             res.json({
-//               user,
-//               success: true,
-//               status: "Registration Successful!",
-//             });
-//           });
-//         });
-//       }
-//     }
-//   );
-// });
+userRouter.post("/googlelogin", async(req,res,next)=>{
+  User.register(
+    new User({
+      googleId: profile.id,
+      name: profile.displayName,
+      email: profile.email,
+      image: profile.picture,
+      isValid: true
+
+  }).save().then((newUser) => {
+      console.log('new user created: ', newUser);
+      return done(null,profile)
+  })
+  )});
+  
+         
+  
+   
 
 userRouter.post("/verify", async (req, res, next) => {
   //getting the string
