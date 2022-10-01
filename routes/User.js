@@ -71,7 +71,7 @@ userRouter.post("/signup", (req, res, next) => {
         res.setHeader("Content-Type", "application/json");
         res.json({ err: err });
       } else {
-        if (req.body.name) user.name = req.body.name;
+        // if (req.body.name) user.name = req.body.name;
         console.log(req.body.email + "2");
         const email = req.body.email;
 
@@ -93,7 +93,7 @@ userRouter.post("/signup", (req, res, next) => {
           }
           console.log(email);
           await sendMail(email, uniqueString);
-          res.send("email sent");
+          // res.send("email sent");
           passport.authenticate("local")(req, res, () => {
             res.statusCode = 200;
             res.setHeader("Content-Type", "application/json");
@@ -114,10 +114,11 @@ userRouter.post("/signup", (req, res, next) => {
 userRouter.post("/googlelogin", async(req,res,next)=>{
   User.register(
     new User({
-      googleId: profile.id,
-      name: profile.displayName,
-      email: profile.email,
-      image: profile.picture,
+      googleId: req.body.googleId,
+      name: req.body.name,
+      email: req.body.email,
+      image: req.body.image,
+      username: req.body.name,
       isValid: true
 
   }).save().then((newUser) => {
