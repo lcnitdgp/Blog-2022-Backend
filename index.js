@@ -8,6 +8,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var passport = require("passport");
 const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 const hostname = "localhost";
 const { connectDB } = require("./config/db");
 const port = 5000;
@@ -31,7 +32,7 @@ var FileStore = require("session-file-store")(session);
 const server = http.createServer(app);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
-
+app.use(express.bodyParser());
 app.use(cors());
 app.use(logger("dev"));
 app.use(bodyParser.json({ limit: "50mb" }));

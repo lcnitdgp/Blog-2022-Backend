@@ -62,7 +62,7 @@ userRouter
 
 userRouter.post("/signup", (req, res, next) => {
   User.register(
-    new User({ username: req.body.username }),
+    new User({ name: req.body.name }),
     req.body.password,
     (err, user) => {
       console.log(user);
