@@ -62,9 +62,10 @@ userRouter
 
 userRouter.post("/signup", (req, res, next) => {
   User.register(
-    new User({ name: req.body.name }),
+    new User({ username: req.body.username }),
     req.body.password,
     (err, user) => {
+      console.log(req.body.name);
       console.log(user);
       if (err) {
         res.statusCode = 500;
@@ -109,29 +110,50 @@ userRouter.post("/signup", (req, res, next) => {
   );
 });
 
-userRouter.post("/googlelogin", async (req, res, next) => {
-  User.register(new User({ username: req.body.name }), (err, user) => {
-    console.log(user);
-    if (err) {
-      res.statusCode = 500;
-      res.setHeader("Content-Type", "application/json");
-      res.json({ err: err });
-    } else {
-      // if (req.body.name) user.name = req.body.name;
-      console.log(req.body.email + "2");
-
-      user.email = req.body.email;
-      user.googleId = req.body.googleId;
-      user.name = req.body.name;
-      user.image = req.body.image;
-      user.isValid = true;
-      user.save().then((newUser) => {
-        console.log("new user created: ", newUser);
-        return done(null, profile);
-      });
-    }
-  });
-});
+userRouter.post("/googlelogin", async(req,res,next)=>{
+      User.register(
+        new User({ username: req.body.username }),
+        "skjskjksjs",
+        (err, user) => {
+          console.log(req.body.name);
+          console.log(user);
+          if (err) {
+            res.statusCode = 500;
+            res.setHeader("Content-Type", "application/json");
+            res.json({ err: err });
+          } else {
+            // if (req.body.name) user.name = req.body.name;
+            console.log(req.body.email + "2");
+            const email = req.body.email;
+    
+            console.log(email);
+            user.email = req.body.email;
+            user.googleId = req.body.googleId,
+            user.email = req.body.email,
+            user.name = req.body.name,
+            user.image = req.body.image,
+            user.isValid = true;
+            user.password = "";
+            //         if (req.body.email) {
+            //           const { email } = req.body.email;
+            //         }
+            user.save(async (err, user) => {
+              if (err) {
+                res.statusCode = 500;
+                res.setHeader("Content-Type", "application/json");
+                res.json({ err: err });
+                return;
+              }
+              console.log(email);
+                res.json({
+                  user,
+                  success: true,
+                  status: "Registration Successful!",
+                });
+            });
+          }
+        }  
+  )});
 
 userRouter.post("/verify", async (req, res, next) => {
   //getting the string
