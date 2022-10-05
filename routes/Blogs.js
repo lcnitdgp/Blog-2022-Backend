@@ -218,10 +218,19 @@ blogRouter
         (blog) => {
           if (blog != null) {
             User.findById(req.body.user_id).then((user) => {
-              blog.comments.push({
-                author: user.name,
-                comment: req.body.comment,
-              });
+              if (user) {
+                blog.comments.push({
+                  author: user.name,
+                  comment: req.body.comment,
+                });
+              } else {
+                User.find({ googleId: req.body.user_id }).then((user) => {
+                  blog.comments.push({
+                    author: user.name,
+                    comment: req.body.comment,
+                  });
+                });
+              }
               blog.save().then(
                 (blog) => {
                   res.statusCode = 200;
