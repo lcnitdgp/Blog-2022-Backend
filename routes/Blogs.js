@@ -212,21 +212,20 @@ blogRouter
       .catch((err) => next(err));
   })
   .post((req, res, next) => {
-    console.log(req.headers);
+    console.log(req.headers)
     Blogs.findById(req.params.blogId)
       .then(
         (blog) => {
+         
           if (blog != null) {
             User.findById(req.body.user_id).then((user) => {
-              User.find({ googleId: req.body.user_id }).then((user) => {
-                blog.comments.push({
-                  author: user.name,
-                  comment: req.body.comment,
-                });
+              blog.comments.push({
+                author: user.name,
+                comment: req.body.comment,
               });
-
               blog.save().then(
                 (blog) => {
+                 
                   Blogs.findById(req.params.blogId).then((blog) => {
                     res.statusCode = 200;
                     res.setHeader("Content-Type", "application/json");
