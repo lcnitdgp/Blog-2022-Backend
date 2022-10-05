@@ -15,7 +15,7 @@ cloudinary.config({
 });
 
 blogRouter.route("/getallblogs").get((req, res, next) => {
-  console.log("helloooooooooooo");
+  console.log("helloooooooooooo")
   Blogs.find({ ispublished: true })
     // .populate('comments.author')
     .then(
@@ -29,7 +29,7 @@ blogRouter.route("/getallblogs").get((req, res, next) => {
     .catch((err) => next(err));
 });
 
-blogRouter.route("/like").post((req, res, next) => {
+blogRouter.route("/like").post( (req, res, next) => {
   Blogs.findById(req.body.id)
     .then(
       (blog) => {
@@ -61,22 +61,22 @@ blogRouter.route("/like").post((req, res, next) => {
     .catch((err) => next(err));
 });
 
-blogRouter.route("/isliked").get((req, res, next) => {
+blogRouter.route("/isliked").get( (req,res,next)=>{
   Blogs.findById(req.body.id)
     .then(
       (blog) => {
         if (blog) {
           if (!blog.likedBy.includes(req.body.user_id)) {
-            res.send(false);
+           res.send(false)
           } else {
-            res.send(true);
+        res.send(true)
           }
         }
       },
       (err) => next(err)
     )
     .catch((err) => next(err));
-});
+})
 
 blogRouter.route("/unpublished").get((req, res, next) => {
   Blogs.find({ ispublished: false })
@@ -92,11 +92,15 @@ blogRouter.route("/unpublished").get((req, res, next) => {
     .catch((err) => next(err));
 });
 
+
 blogRouter.route("/publishblog/:blogId").post((req, res, next) => {
-  console.log(req.body.user_id + " here");
-  User.findById(req.body.user_id).then((user) => {
-    if (user.isAdmin == true) {
-      Blogs.findById(req.params.blogId)
+  console.log(req.body.user_id +" here");
+  User.findById(req.body.user_id).then(
+    (
+      user
+    ) => {
+      if (user.isAdmin == true){
+        Blogs.findById(req.params.blogId)
         //.populate('comments.author')
         .then(
           (blog) => {
@@ -112,14 +116,16 @@ blogRouter.route("/publishblog/:blogId").post((req, res, next) => {
           },
           (err) => next(err)
         )
-        .catch((err) => next(err));
-    } else {
-      res.json({ success: false, status: "Unauthorized." });
+        .catch((err) => next(err));     
+      }
+      else{
+        res.json({success: false, status: "Unauthorized."})
+      }
     }
-  });
+  )
 });
 
-blogRouter.route("/").post((req, res, next) => {
+blogRouter.route("/").post( (req, res, next) => {
   Blogs.create(req.body)
     .then(
       async (blog) => {
@@ -212,10 +218,11 @@ blogRouter
       .catch((err) => next(err));
   })
   .post((req, res, next) => {
-    console.log(req.headers);
+    console.log(req.headers)
     Blogs.findById(req.params.blogId)
       .then(
         (blog) => {
+         
           if (blog != null) {
             User.findById(req.body.user_id).then((user) => {
               if (user) {
@@ -233,12 +240,11 @@ blogRouter
               }
               blog.save().then(
                 (blog) => {
-                  res.statusCode = 200;
-                  res.setHeader("Content-Type", "application/json");
-                  res.json({
-                    blog,
-                    success: true,
-                    status: "Successful!",
+                 
+                  Blogs.findById(req.params.blogId).then((blog) => {
+                    res.statusCode = 200;
+                    res.setHeader("Content-Type", "application/json");
+                    res.json(blog);
                   });
                 },
                 (err) => next(err)
