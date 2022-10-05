@@ -160,7 +160,6 @@ userRouter.post("/googlelogin", async (req, res, next) => {
           console.log(email);
           res.json({
             user,
-            id: user._id,
             success: true,
             status: "Registration Successful!",
           });
