@@ -125,7 +125,7 @@ blogRouter.route("/publishblog/:blogId").post((req, res, next) => {
   )
 });
 
-blogRouter.route("/").post(authenticate.verifyUser, (req, res, next) => {
+blogRouter.route("/").post( (req, res, next) => {
   Blogs.create(req.body)
     .then(
       async (blog) => {
@@ -217,7 +217,7 @@ blogRouter
       )
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post((req, res, next) => {
     console.log(req.headers)
     Blogs.findById(req.params.blogId)
       .then(
