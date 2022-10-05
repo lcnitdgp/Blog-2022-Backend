@@ -284,9 +284,10 @@ userRouter.put("/subscribe/:id", (req, res) => {
 
 userRouter.get("/logout", (req, res) => {
   if (req.session) {
+    console.log("here2")
     req.session.destroy();
     res.clearCookie("session-id");
-    res.redirect("/");
+    res.json({success: true, status: "Logged out successfully."});
   } else {
     var err = new Error("You are not logged in!");
     err.status = 403;

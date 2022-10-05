@@ -93,24 +93,36 @@ blogRouter.route("/unpublished").get((req, res, next) => {
 });
 
 
-blogRouter.route("/publishblog/:blogId").post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-  Blogs.findById(req.params.blogId)
-    //.populate('comments.author')
-    .then(
-      (blog) => {
-        if (blog) {
-          console.log(blog);
-          blog.isPublished = true;
-          blog.save().then((blog) => {
-            res.statusCode = 200;
-            res.setHeader("Content-Type", "application/json");
-            res.json(blog);
-          });
-        }
-      },
-      (err) => next(err)
-    )
-    .catch((err) => next(err));
+blogRouter.route("/publishblog/:blogId").post((req, res, next) => {
+  console.log(req.body.user_id +" here");
+  User.findById(req.body.user_id).then(
+    (
+      user
+    ) => {
+      if (user.isAdmin == true){
+        Blogs.findById(req.params.blogId)
+        //.populate('comments.author')
+        .then(
+          (blog) => {
+            if (blog) {
+              console.log(blog);
+              blog.ispublished = true;
+              blog.save().then((blog) => {
+                res.statusCode = 200;
+                res.setHeader("Content-Type", "application/json");
+                res.json(blog);
+              });
+            }
+          },
+          (err) => next(err)
+        )
+        .catch((err) => next(err));     
+      }
+      else{
+        res.json({success: false, status: "Unauthorized."})
+      }
+    }
+  )
 });
 
 blogRouter.route("/").post(authenticate.verifyUser, (req, res, next) => {
